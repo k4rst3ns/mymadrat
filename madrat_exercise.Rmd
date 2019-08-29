@@ -13,7 +13,7 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-In this exercise, we will practice reading in and using input data through MadRAT. We will create our own MADRat-based package for data input processing package. For this example, we will use World Bank World Development Indicator (WDI) data, with the wbstats library for easy direct download.
+In this exercise, we will practice reading in and transforming input data through MADRaT. We will create our own MADRat-based package for data input processing. For this example, we will use World Bank World Development Indicator (WDI) data, with the WDI library for easy direct download.
 
 ## New "mymadrat" Package
 First, create a new package through the "New Project" option in RStudio and call it "mymadrat". Add madrat.R script to the R folder. 
@@ -36,16 +36,16 @@ First, create a new package through the "New Project" option in RStudio and call
 ```
 
 
-## MadRAT Functions - Exercise
+## MADRaT Functions - Exercise
 
-We will create new download, read, and convert functions for WDI indicators Population, GDP, Employment rate, and Employment share in Agriculture, and agricultural GDP. Each indicator should be a separate parameter within one function.
+We will create new download, read, and convert functions for WDI indicators Population, GDP, Employment rate, Employment share in Agriculture, and Agricultural GDP. Each indicator should be a separate parameter within each function.
 Note that each function needs to be named as a file and as a function with the wrapper, for example, readWDI.R
 
-Remember that complete magclass objects are an array with the the regional (ISO3) dimension in the first dimension, the temporal dimension in the second, and data values in the third dimemsions (3.1, 3.2...). 
+Remember that complete magclass objects are an array with the the regional (ISO3) dimension in the first dimension, the temporal dimension in the second, and data values in the third dimemsion(s) (3.1, 3.2...). 
 
 ### Download function
 
-Note that if direct download not possible, data files can be manually created in the inputdata/sources folder. In that case, a download function is not necessary.
+Note that if direct download not possible, data files can be manually created in the inputdata/sources folder. In that case, a download function is not necessary, but naming of the source folder must match the read functions.
 
 ```{r, echo = TRUE, eval=FALSE}
 install.packages("WDI")
@@ -78,16 +78,20 @@ Read functions are the first step in transforming input data into magclass objec
 
 readWDI <- function(...){
 
-#begin by loading the dataset saved by the previous download function. Note that only the file name and extension are required, as madrat is configured to search for matching sources in its sources folder.
+#begin by loading the dataset saved by the previous download function.
+#Note that only the file name and extension are required, as madrat is configured to search for matching sources in its sources folder.
 load()
   
-#Use as.magpie() to transform the dataset into a magclass object. Remember that magclass objects always have the spatial indicator (iso code, not country name) in their 1st dimension & the temporal dimension in 2nd dimenson. It is ideal to reshape the data into 'tidy' format, with only the last column containing data as.magpie(...tidy=TRUE). 
+#Use as.magpie() to transform the dataset into a magclass object. 
+#Remember that magclass objects always have the spatial indicator (iso code, not country name) in their 1st dimension & the temporal dimension in 2nd dimenson.
+#It is ideal to reshape the data into 'tidy' format, with only the last column containing data as.magpie(...tidy=TRUE). 
 
 wdi <- as.magpie(melt(wdi,id.vars = c("iso2c","year")), ...)
 
-#Once the magclass object is created, we can specify the subtype/indicator desired, so that the read function only returns one indicator at a time. Use [] to subset.
+#Once the magclass object is created, we can specify the subtype/indicator desired,
+#so that the read function only returns one indicator at a time.
+#Use [] to subset.
   
-
 }
 ```
 
@@ -99,13 +103,16 @@ The convert function will complete the magclass object: All 249 countries repres
 
 convertWDI <- function(...){
 
-#Units need to be regularized in this function as well, for instance, MAgPIE uses population in millions:
+#Units need to be regularized in this function as well, for instance, MAgPIE uses population and GDP in millions:
   if (subtype %in% "NY.GDP.MKTP.KD", "SP.POP.TOTL","NV.AGR.TOTL.KD" ) {
     x <- x/1e6
 }
 
-# Now we convert the iso2c countrycodes into iso3c, using the function countrycode(), and the magclass call getRegions. Note that some regions have now been turned into NA; it would be important to check that no information is lost. In this case they are mostly WB aggregate regions. 
-
+# For these datasets, we need to convert the iso2c countrycodes into iso3c (this is also often done in the read function..)
+# We can use the function countrycode(), with the magclass call getRegions. 
+# Note that some regions have now been turned into NA; 
+# It would be important to check that no information is lost. In this case they are mostly WB aggregate regions. 
+library(countrycode)
 getRegions(x)<-countrycode(getRegions(x),"iso2c","iso3c")
 x<-x[!is.na(getCells(x)),,]
 x <- clean_magpie(x)
@@ -125,7 +132,7 @@ return(x)}
 
 ### calcOutput
 
-Magclass objects lend themselves easily to calculations between them. Use the read Functions we just wrote to calculate agricultural GDP as a percentage of total gdp, using a new calcOutput function.
+Magclass objects lend themselves easily to calculations between them. Use the read functions we just wrote to calculate agricultural GDP as a percentage of total gdp, using a new calcOutput function.
 
 ```{r, echo = TRUE, eval=FALSE}
 calcAgGDP <- function(){
@@ -137,10 +144,11 @@ readSource("WDI", subtype="NY.GDP.MKTP.KD")
 }
 
 ```
-
+After the function is written and built, call calc functions through the calcOutput("type") wrapper. Try it now with the calcAgGDP function.
 
 ## Validation
 
-Madrat treats post-model run validation separately from the input data, though these often come from the same source. All validation functions are named using the "calcValid" output, and combine to create a .pdf validation document that compares model indicators with available validation data.
-The "fullVALIDATION" function combines all calcValid functions and produces a .mif file 
+MADRaT treats post-model run validation separately from the input data, though these often come from the same source. All validation functions are named using the "calcValid" output, and combine to create a .pdf validation document that compares model indicators with available validation data. Indicator names of calcValid outputs must match model indicators.
+The "fullVALIDATION" function combines all calcValid functions and produces a .mif file, comparing validation data with model runs.
+Take a look at the calcValidAgGDP in the package, along with "fullVALIDATION"
 
