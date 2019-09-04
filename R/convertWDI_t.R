@@ -22,7 +22,8 @@ convertWDI_t<-function(x,subtype){
   # changing scale of indicators
   if (subtype %in% c("SP.POP.TOTL","NY.GDP.MKTP.PP.KD","NY.GDP.MKTP.PP.CD","NY.GDP.MKTP.CD","NY.GDP.MKTP.KD","NY.GDP.MKTP.KN")) {
     x <- x/1000000
-    #Kosovo added to Serbia
+
+#Kosovo added to Serbia
     x["RS",,] <- dimSums(x[c("RS","XK"),,],dim=1,na.rm=T)
   }else if (subtype %in%  WDI_data$series[,"indicator"]){
     # urbanisation rate and population density and land surface
@@ -33,7 +34,8 @@ convertWDI_t<-function(x,subtype){
     stop("subtype does not exist in the dataset!")
   }
   y <- x
-# Channel Islands add to JEY
+  
+## Channel Islands add to JEY
   JG <- "JEY"
   names(JG) <- "JG"
   getCells(y)<-countrycode(getCells(y),"iso2c","iso3c", custom_match = JG)
@@ -47,10 +49,7 @@ convertWDI_t<-function(x,subtype){
   y <- y[,sort(getYears(y)),]
   #remove years which only contain 0s as entries
   y <- y[,!apply(y,2,function(x) return(all(x==0))),]
-  ## taiwan only listed in global totals, not explicetly
-  #world<- colSums(y,na.rm=T)
-  #taiwan<-x["1W",,] - world
-  #y["TWN",,]<-colSums(taiwan,na.rm=T)
+ 
   y<-y[,sort(getYears(y)),]
   return(y)
 }

@@ -14,10 +14,9 @@
 
 
 downloadWDI_t<-function(){
-  end_year <- as.numeric(strsplit(as.character(Sys.Date()),"-")[[1]][1]) -1
   WDIsearch(cache = WDIcache())
   indicator <- c("NY.GDP.MKTP.PP.CD", "SP.POP.TOTL","SL.EMP.TOTL.SP.ZS","SL.AGR.EMPL.ZS",
                  "NV.AGR.TOTL.ZS")
-  wdi <- WDI(indicator = indicator,start= 1960, end = end_year)
+  wdi <- WDI(indicator = indicator,start= 1960, end = 2018)
   save(wdi,file = paste("WDI","rda",sep="."))
 }

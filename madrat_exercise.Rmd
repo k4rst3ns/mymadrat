@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 In this exercise, we will practice reading in and transforming input data through MADRaT. We will create our own MADRat-based package for data input processing. For this example, we will use World Bank World Development Indicator (WDI) data, with the WDI library for easy direct download.
 
 ## New "mymadrat" Package
-First, create a new package through the "New Project" option in RStudio and call it "mymadrat". Add madrat.R script to the R folder. 
+First, create a new package through the "New Project-> New Directory-> R Package" option in RStudio and call it "mymadrat". Add the following script saved as madrat.R to the newly created R folder. 
 
 ```{r, echo = TRUE, eval=FALSE}
 ### madrat.R
@@ -53,11 +53,12 @@ library(WDI)
 
 downloadWDI <- function(...){
 
-# Use the WDI() function to easily direct download WDI data
+# Use the WDI() function to easily direct download WDI data;
+  #with 1960 as the start year and 2018 as end; see ?WDI() for more help
 install.packages("WDI")
 library(WDI)
 
-# Download these indicators:
+# Download these indicators, by creating a vector of indicators to put into WDI():
 # "NY.GDP.MKTP.KD" National GDP in 2010 USD
 # "SP.POP.TOTL" Total population
 # "SL.EMP.TOTL.SP.ZS" Employment ratio
@@ -80,18 +81,29 @@ readWDI <- function(...){
 
 #begin by loading the dataset saved by the previous download function.
 #Note that only the file name and extension are required, as madrat is configured to search for matching sources in its sources folder.
-load()
+load(...)
   
 #Use as.magpie() to transform the dataset into a magclass object. 
 #Remember that magclass objects always have the spatial indicator (iso code, not country name) in their 1st dimension & the temporal dimension in 2nd dimenson.
 #It is ideal to reshape the data into 'tidy' format, with only the last column containing data as.magpie(...tidy=TRUE). 
+#In this case, we will use the melt() function. 
 
-wdi <- as.magpie(melt(wdi,id.vars = c("iso2c","year")), ...)
+library(reshape2)
+wdi <- melt(wdi, id.vars=c("iso2c", "year"))
+
+#Now create the magpie object, fill in the missing parameters for as.magpie:
+#Note the replacement parameter, which maintains the naming of the indicators
+
+
+wdi <- as.magpie(wdi,..., replacement=".")
 
 #Once the magclass object is created, we can specify the subtype/indicator desired,
 #so that the read function only returns one indicator at a time.
-#Use [] to subset.
-  
+#Use [] to subset the subtype:
+
+x <- wdi[]
+
+return(x)
 }
 ```
 
@@ -103,23 +115,34 @@ The convert function will complete the magclass object: All 249 countries repres
 
 convertWDI <- function(...){
 
-#Units need to be regularized in this function as well, for instance, MAgPIE uses population and GDP in millions:
+  #Units need to be regularized in this function as well, for instance, MAgPIE uses population and GDP in millions:
   if (subtype %in% "NY.GDP.MKTP.KD", "SP.POP.TOTL","NV.AGR.TOTL.KD" ) {
     x <- x/1e6
 }
 
 # For these datasets, we need to convert the iso2c countrycodes into iso3c (this is also often done in the read function..)
 # We can use the function countrycode(), with the magclass call getRegions. 
-# Note that some regions have now been turned into NA; 
-# It would be important to check that no information is lost. In this case they are mostly WB aggregate regions. 
+
+# Note:
+# Other datasets may require other mapping conversions, there exist magclass specific tools: 
+# toolCountry2isocode() and toolCell2isoCell() for instance
+  
 library(countrycode)
 getRegions(x)<-countrycode(getRegions(x),"iso2c","iso3c")
-x<-x[!is.na(getCells(x)),,]
-x <- clean_magpie(x)
+
+
+# Note that some regions have now been turned into NA; you can check with getRegions()
+# It would be important to be certain that no information is lost. In this case the NA's are mostly WB aggregate regions. 
+
+x<-x[!is.na(getCells(x)),,] #remove NA regions
+
 
 #clean_magpie() cleans MAgPIE objects so that they follow some extended magpie object rules (currently it makes sure that the dimnames have names and removes cell numbers if it is purely regional data)
 
-#Now fill the missing countries using toolCountryFill(), choose an arbitrary fill value for now.
+x <- clean_magpie(x)
+
+
+#Now fill the missing countries using toolCountryFill(), choose an arbitrary (Not NA!) fill value for now.
 
 x <- toolCountryFill()
 

@@ -13,7 +13,7 @@
 
 <meta name="author" content="David Chen" />
 
-<meta name="date" content="2019-08-29" />
+<meta name="date" content="2019-09-04" />
 
 <title>MADRaT Exercise</title>
 
@@ -304,14 +304,14 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">MADRaT Exercise</h1>
 <h4 class="author">David Chen</h4>
-<h4 class="date">2019-08-29</h4>
+<h4 class="date">2019-09-04</h4>
 
 
 
 <p>In this exercise, we will practice reading in and transforming input data through MADRaT. We will create our own MADRat-based package for data input processing. For this example, we will use World Bank World Development Indicator (WDI) data, with the WDI library for easy direct download.</p>
 <div id="new-mymadrat-package" class="section level2">
 <h2>New “mymadrat” Package</h2>
-<p>First, create a new package through the “New Project” option in RStudio and call it “mymadrat”. Add madrat.R script to the R folder.</p>
+<p>First, create a new package through the “New Project-&gt; New Directory-&gt; R Package” option in RStudio and call it “mymadrat”. Add the following script saved as madrat.R to the newly created R folder.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">### madrat.R</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#' @importFrom madrat vcat</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="op">&gt;</span><span class="st"> </span>.onLoad &lt;-<span class="st"> </span><span class="cf">function</span>(libname, pkgname){</a>
@@ -327,30 +327,31 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="madrat-functions---exercise" class="section level2">
 <h2>MADRaT Functions - Exercise</h2>
-<p>We will create new download, read, and convert functions for WDI indicators Population, GDP, Employment rate, and Employment share in Agriculture, and agricultural GDP. Each indicator should be a separate parameter within one function. Note that each function needs to be named as a file and as a function with the wrapper, for example, readWDI.R</p>
-<p>Remember that complete magclass objects are an array with the the regional (ISO3) dimension in the first dimension, the temporal dimension in the second, and data values in the third dimemsions (3.1, 3.2…).</p>
+<p>We will create new download, read, and convert functions for WDI indicators Population, GDP, Employment rate, Employment share in Agriculture, and Agricultural GDP. Each indicator should be a separate parameter within each function. Note that each function needs to be named as a file and as a function with the wrapper, for example, readWDI.R</p>
+<p>Remember that complete magclass objects are an array with the the regional (ISO3) dimension in the first dimension, the temporal dimension in the second, and data values in the third dimemsion(s) (3.1, 3.2…).</p>
 <div id="download-function" class="section level3">
 <h3>Download function</h3>
-<p>Note that if direct download not possible, data files can be manually created in the inputdata/sources folder. In that case, a download function is not necessary.</p>
+<p>Note that if direct download not possible, data files can be manually created in the inputdata/sources folder. In that case, a download function is not necessary, but naming of the source folder must match the read functions.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;WDI&quot;</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">library</span>(WDI)</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">downloadWDI &lt;-<span class="st"> </span><span class="cf">function</span>(...){</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co"># Use the WDI() function to easily direct download WDI data</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">install.packages</span>(<span class="st">&quot;WDI&quot;</span>)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">library</span>(WDI)</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co"># Download these indicators:</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># &quot;NY.GDP.MKTP.KD&quot; National GDP in 2010 USD</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># &quot;SP.POP.TOTL&quot; Total population</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co"># &quot;SL.EMP.TOTL.SP.ZS&quot; Employment ratio</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co"># &quot;SL.AGR.EMPL.ZS&quot; Employment in agriculture as % of total employment</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co"># &quot;NV.AGR.TOTL.KD&quot; Agricultural GDP in 2010 USD</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#Save the downloaded data as a .Rda file as the last step of the function</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="kw">save</span>()</a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">}</a></code></pre></div>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co"># Use the WDI() function to easily direct download WDI data;</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">  <span class="co">#with 1960 as the start year and 2018 as end; see ?WDI() for more help</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">install.packages</span>(<span class="st">&quot;WDI&quot;</span>)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="kw">library</span>(WDI)</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># Download these indicators, by creating a vector of indicators to put into WDI():</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># &quot;NY.GDP.MKTP.KD&quot; National GDP in 2010 USD</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co"># &quot;SP.POP.TOTL&quot; Total population</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co"># &quot;SL.EMP.TOTL.SP.ZS&quot; Employment ratio</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co"># &quot;SL.AGR.EMPL.ZS&quot; Employment in agriculture as % of total employment</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co"># &quot;NV.AGR.TOTL.KD&quot; Agricultural GDP in 2010 USD</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#Save the downloaded data as a .Rda file as the last step of the function</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="kw">save</span>()</a>
+<a class="sourceLine" id="cb2-20" data-line-number="20">}</a></code></pre></div>
 </div>
 <div id="read-function" class="section level3">
 <h3>Read function</h3>
@@ -372,8 +373,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#so that the read function only returns one indicator at a time.</span></a>
 <a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#Use [] to subset.</span></a>
 <a class="sourceLine" id="cb3-17" data-line-number="17">  </a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb3-19" data-line-number="19">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-18" data-line-number="18">}</a></code></pre></div>
 </div>
 <div id="convert-function" class="section level3">
 <h3>Convert Function</h3>
@@ -381,30 +381,32 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">convertWDI &lt;-<span class="st"> </span><span class="cf">function</span>(...){</a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#Units need to be regularized in this function as well, for instance, MAgPIE uses population in millions:</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  <span class="co">#Units need to be regularized in this function as well, for instance, MAgPIE uses population and GDP in millions:</span></a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="cf">if</span> (subtype <span class="op">%in%</span><span class="st"> &quot;NY.GDP.MKTP.KD&quot;</span>, <span class="st">&quot;SP.POP.TOTL&quot;</span>,<span class="st">&quot;NV.AGR.TOTL.KD&quot;</span> ) {</a>
 <a class="sourceLine" id="cb4-6" data-line-number="6">    x &lt;-<span class="st"> </span>x<span class="op">/</span><span class="fl">1e6</span></a>
 <a class="sourceLine" id="cb4-7" data-line-number="7">}</a>
 <a class="sourceLine" id="cb4-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co"># In this case, we need to convert the iso2c countrycodes into iso3c (this can also be done in the read function..)</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co"># For these datasets, we need to convert the iso2c countrycodes into iso3c (this is also often done in the read function..)</span></a>
 <a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co"># We can use the function countrycode(), with the magclass call getRegions. </span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co"># Note that some regions have now been turned into NA; </span></a>
-<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co"># It would be important to check that no information is lost. In this case they are mostly WB aggregate regions. </span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="kw">library</span>(countrycode)</a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="kw">getRegions</span>(x)&lt;-<span class="kw">countrycode</span>(<span class="kw">getRegions</span>(x),<span class="st">&quot;iso2c&quot;</span>,<span class="st">&quot;iso3c&quot;</span>)</a>
-<a class="sourceLine" id="cb4-15" data-line-number="15">x&lt;-x[<span class="op">!</span><span class="kw">is.na</span>(<span class="kw">getCells</span>(x)),,]</a>
-<a class="sourceLine" id="cb4-16" data-line-number="16">x &lt;-<span class="st"> </span><span class="kw">clean_magpie</span>(x)</a>
-<a class="sourceLine" id="cb4-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#clean_magpie() cleans MAgPIE objects so that they follow some extended magpie object rules (currently it makes sure that the dimnames have names and removes cell numbers if it is purely regional data)</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co"># Other datasets may require other mapping conversions, there exist magclass specific tools: </span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co"># toolCountry2isocode and toolCell2isoCell for instance</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co"># Note that some regions have now been turned into NA; </span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co"># It would be important to check that no information is lost. In this case they are mostly WB aggregate regions. </span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="kw">library</span>(countrycode)</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="kw">getRegions</span>(x)&lt;-<span class="kw">countrycode</span>(<span class="kw">getRegions</span>(x),<span class="st">&quot;iso2c&quot;</span>,<span class="st">&quot;iso3c&quot;</span>)</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">x&lt;-x[<span class="op">!</span><span class="kw">is.na</span>(<span class="kw">getCells</span>(x)),,]</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">x &lt;-<span class="st"> </span><span class="kw">clean_magpie</span>(x)</a>
 <a class="sourceLine" id="cb4-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#Now fill the missing countries using toolCountryFill(), choose an arbitrary fill value for now.</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#clean_magpie() cleans MAgPIE objects so that they follow some extended magpie object rules (currently it makes sure that the dimnames have names and removes cell numbers if it is purely regional data)</span></a>
 <a class="sourceLine" id="cb4-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb4-22" data-line-number="22">x &lt;-<span class="st"> </span><span class="kw">toolCountryFill</span>()</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co">#Now fill the missing countries using toolCountryFill(), choose an arbitrary fill value for now.</span></a>
 <a class="sourceLine" id="cb4-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">#Now we have a complete MAgPIE object! congratulations. </span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">x &lt;-<span class="st"> </span><span class="kw">toolCountryFill</span>()</a>
 <a class="sourceLine" id="cb4-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="kw">return</span>(x)}</a>
-<a class="sourceLine" id="cb4-27" data-line-number="27">  </a></code></pre></div>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">#Now we have a complete MAgPIE object! congratulations. </span></a>
+<a class="sourceLine" id="cb4-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="kw">return</span>(x)}</a>
+<a class="sourceLine" id="cb4-29" data-line-number="29">  </a></code></pre></div>
 </div>
 <div id="calcoutput" class="section level3">
 <h3>calcOutput</h3>
