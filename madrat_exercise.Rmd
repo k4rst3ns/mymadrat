@@ -169,9 +169,8 @@ readSource("WDI", subtype="NY.GDP.MKTP.KD")
 ```
 After the function is written and built, call calc functions through the calcOutput("type") wrapper. Try it now with the calcAgGDP function.
 
-## Validation
+All functions are saved in the inputdata/cache file after the first run, increasing efficiency. This means that for any updates to functions, the older cached function needs to be deleted. 
+Cache is toggled with setConfig(forcecache=TRUE)
 
-MADRaT treats post-model run validation separately from the input data, though these often come from the same source. All validation functions are named using the "calcValid" output, and combine to create a .pdf validation document that compares model indicators with available validation data. Indicator names of calcValid outputs must match model indicators.
-The "fullVALIDATION" function combines all calcValid functions and produces a .mif file, comparing validation data with model runs.
-Take a look at the calcValidAgGDP in the package, along with "fullVALIDATION"
+
 
