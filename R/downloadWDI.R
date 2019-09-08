@@ -7,13 +7,13 @@
 #' @seealso  \code{\link{downloadSource}} \code{\link{WDI}}
 #' @examples
 #'
-#' \dontrun{ a <- downloadSource(type="WDI_t")
+#' \dontrun{ a <- downloadSource(type="WDI")
 #' }
 #'
 #' @importFrom WDI WDI WDIcache WDIsearch
 
 
-downloadWDI_t<-function(){
+downloadWDI<-function(){
   WDIsearch(cache = WDIcache())
   indicator <- c("NY.GDP.MKTP.PP.CD", "SP.POP.TOTL","SL.EMP.TOTL.SP.ZS","SL.AGR.EMPL.ZS",
                  "NV.AGR.TOTL.ZS")

@@ -20,7 +20,7 @@
 #' }
 #' @importFrom reshape2 melt
 
-readWDI_t<-function(subtype){
+readWDI<-function(subtype){
   load("WDI.rda")
    wdi$country <- NULL
   wdi <- as.magpie(melt(wdi,id.vars = c("iso2c","year")),spatial=1,temporal=2,tidy=TRUE,replacement =".")
