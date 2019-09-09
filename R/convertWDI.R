@@ -7,16 +7,16 @@
 #' @param x MAgPIE object containing WDI data region resolution
 #' @param subtype Name of the worldbank indicator, e.g. "SP.POP.TOTL"
 #' @return MAgPIE object of the WDI data disaggregated to country level
-#' @author Jan Phillip Dietrich, Benjamin Bodirsky, Xiaoxi Wang
+#' @author Jan Phillip Dietrich, Benjamin Bodirsky, Xiaoxi Wang, David Chen
 #' @examples
 #'
-#' \dontrun{ a <- convertWDI_t(x)
+#' \dontrun{ a <- convertWDI(x)
 #' }
 #' @importFrom magclass getCells<-
 #' @importFrom countrycode countrycode
 
 
-convertWDI_t<-function(x,subtype){
+convertWDI<-function(x,subtype){
   WDI_data <- WDI::WDI_data
 
   # changing scale of indicators
