@@ -60,11 +60,10 @@ install.packages("WDI")
 library(WDI)
 
 # Download these indicators, by creating a vector of indicators to put into WDI():
-# "NY.GDP.MKTP.KD" National GDP in 2010 USD
+# "NY.GDP.MKTP.CD" National GDP in current USD
 # "SP.POP.TOTL" Total population
-# "SL.EMP.TOTL.SP.ZS" Employment ratio
 # "SL.AGR.EMPL.ZS" Employment in agriculture as % of total employment
-# "NV.AGR.TOTL.KD" Agricultural GDP in 2010 USD
+# "NV.AGR.TOTL.CD" Agricultural GDP in current USD
 
 #Save the downloaded data as a .Rda file as the last step of the function
 save()

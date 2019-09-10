@@ -15,8 +15,10 @@
 
 downloadWDI<-function(){
   WDIsearch(cache = WDIcache())
-  indicator <- c("NY.GDP.MKTP.PP.CD", "SP.POP.TOTL","SL.EMP.TOTL.SP.ZS","SL.AGR.EMPL.ZS",
-                 "NV.AGR.TOTL.ZS")
+  indicator <- c("NY.GDP.MKTP.CD", # gdp PPP current US$
+                 "SP.POP.TOTL", # Total population
+                 "SL.AGR.EMPL.ZS", #Employment in agriculture as % of total employment
+                 "NV.AGR.TOTL.CD") # Ag GDP current US$
   wdi <- WDI(indicator = indicator,start= 1960, end = 2018)
   save(wdi,file = paste("WDI","rda",sep="."))
 }
