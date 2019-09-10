@@ -11,11 +11,11 @@
 
 calcAgGDP <- function(){
 
-  gdp <- readSource("WDI", subtype="NY.GDP.MKTP.CD")
-  ag_gdp <- readSource("WDI", subtype="NV.AGR.TOTL.CD")
+  gdp <- readSource("WDI", subtype="NY.GDP.MKTP.CD", aggregate=F)
+  ag_gdp <- readSource("WDI", subtype="NV.AGR.TOTL.CD", aggregate=F)
 
   x <- ag_gdp/gdp
-
+  x <- collapseNames(x)
 
   return(list(
     x=x,
