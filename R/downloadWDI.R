@@ -14,7 +14,7 @@
 
 
 downloadWDI<-function(){
-  WDIsearch(cache = WDIcache())
+  #WDIsearch(cache = WDIcache()) #this function searches for updates from WDI website
   indicator <- c("NY.GDP.MKTP.CD", # gdp PPP current US$
                  "SP.POP.TOTL", # Total population
                  "SL.AGR.EMPL.ZS", #Employment in agriculture as % of total employment

@@ -34,11 +34,11 @@ convertWDI<-function(x,subtype){
     stop("subtype does not exist in the dataset!")
   }
   y <- x
-  
+
 ## Channel Islands add to JEY
   JG <- "JEY"
   names(JG) <- "JG"
-  getCells(y)<-countrycode(getCells(y),"iso2c","iso3c", custom_match = JG)
+  getCells(y)<-countrycode::countrycode(getCells(y),"iso2c","iso3c", custom_match = JG)
   y<-y[!is.na(getCells(y)),,]
   y<-clean_magpie(y)
 
@@ -49,7 +49,7 @@ convertWDI<-function(x,subtype){
   y <- y[,sort(getYears(y)),]
   #remove years which only contain 0s as entries
   y <- y[,!apply(y,2,function(x) return(all(x==0))),]
- 
+
   y<-y[,sort(getYears(y)),]
   return(y)
 }
