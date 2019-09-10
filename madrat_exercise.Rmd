@@ -12,10 +12,11 @@ vignette: >
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
+### Learning Objectives 
 
-In this exercise, we will practice reading in and transforming input data through MADRaT. We will create our own MADRat-based package for data input processing. For this example, we will use World Bank World Development Indicator (WDI) data, with the WDI library for easy direct download.
+In this exercise, we will practice reading in and transforming input data through MADRaT. We will create our own MADRat-based package for data input processing, and create the standar set of functions that allow for reading in standardized input data. For this example, we will use World Bank World Development Indicator (WDI) data, with the WDI library for easy direct download.
 
-## New "mymadrat" Package
+## 1. New "mymadrat" Package
 First, create a new package through the "New Project-> New Directory-> R Package" option in RStudio and call it "mymadrat". Add the following script saved as madrat.R to the newly created R folder. 
 
 ```{r, echo = TRUE, eval=FALSE}
@@ -36,14 +37,14 @@ First, create a new package through the "New Project-> New Directory-> R Package
 ```
 
 
-## MADRaT Functions - Exercise
+## 2. MADRaT Functions - Exercise
 
 We will create new download, read, and convert functions for WDI indicators Population, GDP, Employment rate, Employment share in Agriculture, and Agricultural GDP. Each indicator should be a separate parameter within each function.
 Note that each function needs to be named as a file and as a function with the wrapper, for example, readWDI.R
 
 Remember that complete magclass objects are an array with the the regional (ISO3) dimension in the first dimension, the temporal dimension in the second, and data values in the third dimemsion(s) (3.1, 3.2...). 
 
-### Download function
+### 2.1 Download function
 
 Note that if direct download not possible, data files can be manually created in the inputdata/sources folder. In that case, a download function is not necessary, but naming of the source folder must match the read functions.
 
@@ -71,7 +72,7 @@ save()
 
 ```
 
-### Read function
+### 2.2 Read function
 
 Read functions are the first step in transforming input data into magclass objects. They should be as simple as possible, with most steps of filling in, transforming, and data cleaning reserved for the convert function. The Read function should be able to specify between indicators (subtypes).
 
@@ -80,7 +81,7 @@ Read functions are the first step in transforming input data into magclass objec
 readWDI <- function(...){
 
 #begin by loading the dataset saved by the previous download function.
-#Note that only the file name and extension are required, as madrat is configured to search for matching sources in its sources folder.
+
 load(...)
   
 #Use as.magpie() to transform the dataset into a magclass object. 
@@ -97,7 +98,8 @@ wdi <- melt(wdi, id.vars=c("iso2c", "year"))
 
 wdi <- as.magpie(wdi,..., replacement=".")
 
-#Once the magclass object is created, we can specify the subtype/indicator desired,
+#Once the magclass object is created, take a look at it. What does the function fulldim() tell you?
+#we can specify the subtype/indicator desired,
 #so that the read function only returns one indicator at a time.
 #Use [] to subset the subtype:
 
@@ -107,7 +109,7 @@ return(x)
 }
 ```
 
-### Convert Function
+### 2.3 Convert Function
 
 The convert function will complete the magclass object: All 249 countries represented in MAGPie need to have a value and be in ISO3 country code.
 
@@ -153,9 +155,11 @@ return(x)}
 
 ```
 
-### calcOutput
+### 3. calcOutput
 
-Magclass objects lend themselves easily to calculations between them. Use the read functions we just wrote to calculate agricultural GDP as a percentage of total gdp, using a new calcOutput function.
+Magclass objects lend themselves easily to calculations between them. The calcOutput wrapper function calls the functions used to transform input data, called as calcOutput("type", "subtype", ...)
+
+Use the read functions we just wrote to calculate agricultural GDP as a percentage of total gdp, using a new calcOutput function. 
 
 ```{r, echo = TRUE, eval=FALSE}
 calcAgGDP <- function(){
@@ -167,7 +171,7 @@ readSource("WDI", subtype="NY.GDP.MKTP.KD")
 }
 
 ```
-After the function is written and built, call calc functions through the calcOutput("type") wrapper. Try it now with the calcAgGDP function.
+After the function is written and built, call calc functions through the calcOutput("type") wrapper. Try it now with the calcAgGDP function. What is Germany's share of Agricultural GDP in 2010?
 
 All functions are saved in the inputdata/cache file after the first run, increasing efficiency. This means that for any updates to functions, the older cached function needs to be deleted. 
 Cache is toggled with setConfig(forcecache=TRUE)
