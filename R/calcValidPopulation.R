@@ -2,7 +2,7 @@
 #'
 #' Returns historical development of population
 #'
-#' @param datasource  WDI
+#' @param datasource Various daasource to load population data from can be specified here. So far available: WDI (default)
 #' @author Florian Humpenoeder, Jan Philipp Dietrich, Kristine Karsens
 #' @importFrom magclass getRegions
 
